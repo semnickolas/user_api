@@ -16,7 +16,7 @@
     <h1 class="text-center">Users Page</h1>
     <form class="form-group" method="GET" action="{{ url('users-page') }}">
         <div class="row" style="width: 1400px; padding-left: 30%;">
-            <input class="form-control col-md-8" name="filter" type="text">
+            <input class="form-control col-md-8" name="filter" type="text", value="{{ filter }}">
             <input class="form-control btn-primary col-md-4" type="submit" value="Filter">
         </div>
     </form>
