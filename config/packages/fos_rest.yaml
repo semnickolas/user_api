@@ -1,0 +1,15 @@
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+fos_rest:
+  routing_loader: false
+  exception:
+    enabled: true
+  body_converter:
+    enabled: true
+    validate: true
+  view:
+    mime_types:
+      json: ['application/json']
+      xml: ['application/xml']
+  format_listener:
+    rules:
+      - { path: '^/user', priorities: ['json'], fallback_format: json, prefer_extension: false }

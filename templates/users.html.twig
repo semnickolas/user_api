@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users Page</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+<div class="container-fluid align-content-center col-md-12">
+    <h1 class="text-center">Users Page</h1>
+    <form class="form-group" method="GET" action="{{ url('users-page') }}">
+        <div class="row" style="width: 1400px; padding-left: 30%;">
+            <input class="form-control col-md-8" name="filter" type="text">
+            <input class="form-control btn-primary col-md-4" type="submit" value="Filter">
+        </div>
+    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#ID</th>
+            <th scope="col">Firstname</th>
+            <th scope="col">Lastname</th>
+            <th scope="col">Phone numbers</th>
+            <th scope="col">Create date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <th scope="row">{{ user.getId().__toString() }}</th>
+                <td>{{ user.getFirstName() }}</td>
+                <td>{{ user.getLastName() }}</td>
+                <td>{{ user.getUserPhones() }}</td>
+                <td>{{ user.getCreatedAt().format('Y-m-d H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+        # The bus that is going to be injected when injecting MessageBusInterface
+        default_bus: command.bus
+        buses:
+            command.bus:
+                middleware:
+                    - validation
+                    - doctrine_transaction
+            query.bus:
+                middleware:
+                    - validation
+
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transport-configuration
+            create_users:
+                dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+                options:
+                    # queue_name is specific to the doctrine transport
+                    queue_name: create_users
+                    # for AMQP send to a separate exchange then queue
+                    exchange:
+                        name: create_users
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+
+        routing:
+            # Route your messages to the transports
+            # 'App\Message\YourMessage': async
+            UserApi\Object\Request\CreateUser : create_users

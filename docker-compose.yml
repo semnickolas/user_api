@@ -1,0 +1,79 @@
+version: '2'
+
+services:
+  mysql:
+    container_name: user_api_mysql
+    image: mysql:8.0
+    entrypoint: ['docker-entrypoint.sh', '--default-authentication-plugin=mysql_native_password']
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "16306:3306"
+    networks:
+      - default
+  php:
+    container_name: user_api_php
+    build: docker_confs/php/.
+    volumes:
+      - .:/code
+      - ~/.ssh/:/root/.ssh/
+    links:
+      - mysql
+      - rabbitmq
+      - redis
+      - elastic
+    environment:
+      XDEBUG_CONFIG: "remote_host=172.17.0.1"
+      DOCKER_HOST: "tcp://localhost:4243"
+      PHP_IDE_CONFIG: "serverName=docker"
+    ports:
+      - "9009:9000"
+    networks:
+      - default
+  nginx:
+    image: nginx:1.9.10
+    container_name: user_api_nginx
+    ports:
+      - "8088:80"
+    volumes:
+      - ./docker_confs/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    volumes_from:
+      - php
+    links:
+      - php
+    networks:
+      - default
+  rabbitmq:
+    image: bitnami/rabbitmq:latest
+    container_name: user_api_rabbit
+    ports:
+      - "15639:15672"
+      - "5679:5672"
+    environment:
+      RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+    networks:
+      - default
+  redis:
+    image: bitnami/redis:latest
+    container_name: user_api_redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - default
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    container_name: user_api_es
+    environment:
+      - node.name=user_api_es
+      - cluster.initial_master_nodes=user_api_es
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - transport.host=127.0.0.1
+    ports:
+      - 9222:9200
+    networks:
+      - default
