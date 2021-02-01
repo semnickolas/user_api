@@ -33,11 +33,11 @@
         <tbody>
         {% for user in users %}
             <tr>
-                <th scope="row">{{ user.getId().__toString() }}</th>
-                <td>{{ user.getFirstName() }}</td>
-                <td>{{ user.getLastName() }}</td>
-                <td>{{ user.getUserPhones() }}</td>
-                <td>{{ user.getCreatedAt().format('Y-m-d H:i:s') }}</td>
+                <th scope="row">{{ user.getUuid }}</th>
+                <td>{{ user.getFirstName }}</td>
+                <td>{{ user.getLastName }}</td>
+                <td>{{ user.getUserPhones }}</td>
+                <td>{{ user.getDateTimeCreatedAt }}</td>
             </tr>
         {% endfor %}
         </tbody>

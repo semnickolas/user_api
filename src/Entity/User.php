@@ -117,8 +117,18 @@ class User
         return $this;
     }
 
+    public function getUuid() : string
+    {
+        return $this->id->__toString();
+    }
+
     public function getUserPhones() : string
     {
         return implode(', ', $this->phoneNumbers);
+    }
+
+    public function getDateTimeCreatedAt() : string
+    {
+        return $this->createdAt->format(DATE_ATOM);
     }
 }
